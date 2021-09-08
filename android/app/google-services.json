@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1056917798859",
+    "project_id": "railway-ticketing-f605a",
+    "storage_bucket": "railway-ticketing-f605a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1056917798859:android:0c0be55e41ac78ee60004e",
+        "android_client_info": {
+          "package_name": "com.project.railway_ticketing"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1056917798859-jveipf32q6715u5j0drbftuhr7k4ke10.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDF4AyP_PoTOO2hEQ6XVQG81ZAsetBw5YY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1056917798859-jveipf32q6715u5j0drbftuhr7k4ke10.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
