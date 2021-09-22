@@ -12,8 +12,6 @@ import 'package:railway_ticketing/services/firebaseservice.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'bookticket.dart';
 import 'notifcation.dart';
-import 'passwordchange.dart';
-import 'settings.dart';
 import 'mydetails.dart';
 import 'myreservation.dart';
 import 'mytickets.dart';
@@ -28,7 +26,6 @@ class _HomeWallState extends State<HomeWall> {
   Widget cusSearchBar = Text('Home');
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     FirebaseMessaging.instance
@@ -136,33 +133,7 @@ class _HomeWallState extends State<HomeWall> {
                 },
               ),
             ),
-            Card(
-              child: ListTile(
-                leading: Icon(Icons.lock),
-                title: Text('Change Password'),
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => PasswordChange()));
-                },
-              ),
-            ),
-            Card(
-              child: ListTile(
-                leading: Icon(Icons.settings),
-                title: Text('Settings'),
-                onTap: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => Settings()));
-                },
-              ),
-            ),
-            Card(
-              child: ListTile(
-                leading: Icon(Icons.help_outline),
-                title: Text('Help'),
-                onTap: () {},
-              ),
-            ),
+          
             Card(
               child: ListTile(
                 leading: Icon(Icons.logout),

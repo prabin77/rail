@@ -73,7 +73,7 @@ class FirebaseService {
 
   Future<List<Schedule>> getSchedule() {
     return schedule
-        //  .where('date', isEqualTo: DateTime.now().toString().split(' ')[0])
+        .where('date', isEqualTo: DateTime.now().toString().split(' ')[0])
         .get()
         .then((value) {
       print(value);
@@ -132,15 +132,15 @@ class FirebaseService {
         .catchError((error) => print("Failed to book ticket: $error"));
   }
 
-  Future<void> addreserve(
-      {String train_class,
-      String no_of_tickets,
-      String schedule_id,
-      String ticket_id,
-      String ticket_holder,
-      String citizenship_number,
-      String total_cost,
-      }) {
+  Future<void> addreserve({
+    String train_class,
+    String no_of_tickets,
+    String schedule_id,
+    String ticket_id,
+    String ticket_holder,
+    String citizenship_number,
+    String total_cost,
+  }) {
     // Call the user's CollectionReference to add a new user
 
     String uid = FirebaseAuth.instance.currentUser.uid;
@@ -154,7 +154,6 @@ class FirebaseService {
           'ticket_holder': ticket_holder,
           'citizenship_number': citizenship_number,
           'total_cost': total_cost,
-          
         })
         .then((value) => print("ticket reserved"))
         .catchError((error) => print("Failed to book ticket: $error"));
