@@ -28,20 +28,11 @@ class _HomeWallState extends State<HomeWall> {
   void initState() {
     super.initState();
 
-    FirebaseMessaging.instance
-        .getInitialMessage()
-        .then((RemoteMessage message) {
-      print("objectkjhgfghj");
-      if (message != null) {
-        // Navigator.pushNamed(context, '/message',
-        //     arguments: MessageArguments(message, true));
-      }
-    });
-
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      RemoteNotification notification = message.notification;
+      print(message);
+      var notification = message.notification;
       AndroidNotification android = message.notification?.android;
-      if (notification != null && android != null && !kIsWeb) {
+      if (notification != null && android != null) {
         flutterLocalNotificationsPlugin.show(
             notification.hashCode,
             notification.title,
@@ -51,18 +42,40 @@ class _HomeWallState extends State<HomeWall> {
                 channel.id,
                 channel.name,
                 channel.description,
-                // TODO add a proper drawable resource to android, for now using
-                //      one that already exists in example app.
-                icon: 'logo.png',
+                color: Colors.blue,
+                playSound: true,
+                icon: '@mipmap/ic_launcher',
               ),
             ));
       }
     });
+    FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage value){
+  
+ if(value != null){ RemoteNotification notification = value.notification;
+      AndroidNotification android = value.notification?.android;
+      debugPrint("Inside initial Notification without data");
+     
+      if (notification != null && android != null) {
+      debugPrint("Inside initial Notification with data");
 
+        // Navigator.of(context).push(
+        //   MaterialPageRoute(builder: (context) => OrderedItemsScreen()),
+        // );
+      }}
+});
+    
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('A new onMessageOpenedApp event was published!');
-      // Navigator.pushNamed(context, '/message',
-      //     arguments: MessageArguments(message, true));
+      RemoteNotification notification = message.notification;
+      AndroidNotification android = message.notification?.android;
+      debugPrint("Inside background Notification without data");
+
+      if (notification != null && android != null) {
+      debugPrint("Inside background Notification with data");
+        // Navigator.of(context).push(
+        //   MaterialPageRoute(builder: (context) => OrderedItemsScreen()),
+        // );
+      }
+
     });
 
     save();
@@ -71,6 +84,8 @@ class _HomeWallState extends State<HomeWall> {
   save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // var token = await FirebaseMessaging.instance.getToken();
+     String fcmtoken = await FirebaseMessaging.instance.getToken();
+     print("token $fcmtoken");
 
     FirebaseService().getUser().then((value) {
       if (value != null) {

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ class Khaltipay extends StatefulWidget {
 }
 
 class _KhaltipayState extends State<Khaltipay> {
+  Dio dio = Dio();
   FlutterKhalti _flutterKhalti = FlutterKhalti.configure(
       publicKey: "test_public_key_eacadfb91994475d8bebfa577b0bca68",
       urlSchemeIOS: "KhaltiPayFlutterExampleScheme",
@@ -40,10 +42,11 @@ class _KhaltipayState extends State<Khaltipay> {
   get() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     print('citizenship_number');
+    String fcmtoken = await FirebaseMessaging.instance.getToken();
     setState(() {
       citizenship_number = prefs.getString("citizenship_number");
       ticket_holder = prefs.getString('ticket_holder');
-      _token = prefs.getString("fcm");
+      _token = fcmtoken;
     });
   }
 
@@ -76,8 +79,12 @@ class _KhaltipayState extends State<Khaltipay> {
                         citizenship_number: citizenship_number,
                         ticket_holder: ticket_holder,
                         total_cost: widget.total_cost.toString())
-                    .then((value) {
+                    .then((value)async {
+                      await FirebaseMessaging.instance.subscribeToTopic(widget.schedule_id);
                   sendPushMessage();
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+
                 });
                 return true;
               },
@@ -88,33 +95,39 @@ class _KhaltipayState extends State<Khaltipay> {
     );
   }
 
-  String constructFCMPayload(String token) {
-    return jsonEncode({
-      'token': token,
-      'data': {
-        'via': 'FlutterFire Cloud Messaging!!!',
-      },
-      'notification': {
-        'title': 'Hello FlutterFire!',
-        'body': 'This notification  was created via FCM!',
-      },
-    });
-  }
+  
 
   Future<void> sendPushMessage() async {
     if (_token == null) {
       print('Unable to send FCM message, no token exists.');
       return;
     }
+  var data=  {
+      'to': _token,
+      
+      "notification" : {
+      "body" : "Ticked booking has been confirmed",
+      "title" : "Booking Confirmed"
+    }
+    };
 
     try {
-      await http.post(
-        Uri.parse('https://api.rnfirebase.io/messaging/send'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: constructFCMPayload(_token),
-      );
+      await dio.post("https://fcm.googleapis.com/fcm/send",data:data,options:Options(
+        headers: {
+           'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization':'key= AAAA9hU1v8s:APA91bFcyvuhddlZU14Nl3f3DjzJ6ncxQVhxG-eir_4q3UwlWOc8dqC7nrMy2JstAL6lc-uUZjuw9bKZZ477_Go4DuChXnXcRMnrq8CIDu3jIW3YQXt3fLDpAiAGWktK2YLdZ1sTg2z1'
+        }
+      )).then((e){
+        print(e.data);
+      });
+      // await http.post(
+      //   Uri.parse('https://fcm.googleapis.com/fcm/send'),
+      //   headers: <String, String>{
+      //     'Content-Type': 'application/json; charset=UTF-8',
+      //     'Authorization':'key= AAAA9hU1v8s:APA91bFcyvuhddlZU14Nl3f3DjzJ6ncxQVhxG-eir_4q3UwlWOc8dqC7nrMy2JstAL6lc-uUZjuw9bKZZ477_Go4DuChXnXcRMnrq8CIDu3jIW3YQXt3fLDpAiAGWktK2YLdZ1sTg2z1 '
+      //   },
+      //   body: constructFCMPayload(_token),
+      // );
       print('FCM request for device sent!');
     } catch (e) {
       print(e);
